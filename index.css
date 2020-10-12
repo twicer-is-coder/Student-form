@@ -1,0 +1,22 @@
+header{
+    text-align: center;
+    
+
+}
+
+u{
+    font-weight: bold;
+ color: purple;
+}
+form{
+    /* align-items: center; */
+   background-color: rebeccapurple;
+   color: whitesmoke;
+}
+.thank{
+    color: green;
+ font-size: 20px;
+}
+.submit{
+    color: indigo;
+}
