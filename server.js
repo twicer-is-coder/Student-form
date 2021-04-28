@@ -1,14 +1,12 @@
 const express = require('express');
 const app = express();
+var cors = require('cors');
 const http = require('http');
 const server = http.createServer(app);
 const io = require('socket.io')(server);
 const PORT = process.env.PORT || 3030;
 
-io.configure(function () { 
-    io.set("transports", ["xhr-polling"]); 
-    io.set("polling duration", 10); 
-  });
+app.use(cors());
 
 io.on('connection', (socket) => {
    
