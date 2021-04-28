@@ -5,17 +5,11 @@ const server = http.createServer(app);
 const io = require('socket.io')(server);
 const PORT = process.env.PORT || 3030;
 
-app.use(function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", req.header('Origin'));
-    res.header("Access-Control-Allow-Credentials", true);
-    res.header(
-      "Access-Control-Allow-Headers",
-      "Origin, X-Requested-With, Content-Type, Accept"
-    );
-    res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE");
-    next();
+io.configure(function () { 
+    io.set("transports", ["xhr-polling"]); 
+    io.set("polling duration", 10); 
   });
-  
+
 io.on('connection', (socket) => {
    
     console.log('A User Connected');
