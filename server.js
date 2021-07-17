@@ -1,48 +1,27 @@
 const express = require('express');
 const app = express();
-var cors = require('cors');
+const cors = require('cors');
 const http = require('http');
 const server = http.createServer(app);
-const io = require('socket.io')(server, {
-    cors: {
-        origin: "*",
-        methods: ["GET", "POST"]
-    }
-});
+
+const RoomsRoutes = require('./routes/rooms');
+const UsersRoutes = require('./routes/users');
+
+const { Initialize_Socket_IO } = require('./user_modules/socket-io');
+const { Initialize_Mongo_DB } = require('./db/db')
 const PORT = process.env.PORT || 3030;
 
+Initialize_Socket_IO(server);
+Initialize_Mongo_DB();
+
 app.use(cors());
+app.use('/api/room', RoomsRoutes);
+app.use('/api/user', UsersRoutes);
 
-io.on('connection', (socket) => {
-
-    console.log('A User Connected');
-    socket.broadcast.emit("New User");
-
-    socket.on('join-room', (roomId, userId) => {
-        socket.join(roomId);
-        socket.to(roomId).broadcast.emit('user-connected', userId);
-    });
-
-    socket.on('disconnect', () => {
-        console.log('A User Disconnected');
-    });
-
-    socket.on('VideoPlayPause', function (pause) {
-        socket.broadcast.emit('RecieveVid', pause);
-    });
-
-    socket.on('BarTimeUpdate', function (Time) {
-        socket.broadcast.emit('BarTimeUpdate', Time);
-    });
-
-    socket.on('Chat Message', (Message) => {
-        // io.emit('LatestMessage', msg);
-        console.log("Message", Message);
-        socket.broadcast.emit('Chat Message', { "Message": Message });
-    });
-
-});
+app.all('*', (req, res) => {
+    res.status(404).send('Invalid Endpoint!')
+})
 
 server.listen(PORT, () => {
-    console.log(`Server Started on: ${PORT}`);
+    console.log('\x1b[36m%s\x1b[0m', `Server Started on: ${PORT}`);
 });
